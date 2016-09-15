@@ -5,14 +5,26 @@ require 'dotenv'
 Dotenv.load(".env")
 include Ebooks
 
+# ALL_BOTS = ['EBOOKS', 'CELESTROGEN']
+
+ROBOT_ID = "ebooks" # Prefer not to talk to other robots
+
+# ALESSIA EBOOKS KEYS
 CONSUMER_KEY = ENV['EBOOKS_CONSUMER_KEY']
 CONSUMER_SECRET = ENV['EBOOKS_CONSUMER_SECRET']
 OAUTH_TOKEN = ENV['EBOOKS_OAUTH_TOKEN']
 OAUTH_TOKEN_SECRET = ENV['EBOOKS_OAUTH_TOKEN_SECRET']
-
-ROBOT_ID = "ebooks" # Prefer not to talk to other robots
 TWITTER_USERNAME = "alessia_ebooks" # Ebooks account username
-TEXT_MODEL_NAME = "my_ebooks" # This should be the name of the text model
+# TEXT_MODEL_NAME = "my_ebooks" # This should be the name of the text model
+
+# CELESTROGEN EBOOKS KEYS
+CELESTROGEN_USERNAME = "celestrogen_ebooks"
+CELESTROGEN_CONSUMER_KEY = ENV['CELESTROGEN_CONSUMER_KEY']
+CELESTROGEN_CONSUMER_SECRET = ENV['CELESTROGEN_CONSUMER_SECRET']
+CELESTROGEN_OAUTH_TOKEN = ENV['CELESTROGEN_OAUTH_TOKEN']
+CELESTROGEN_OAUTH_TOKEN_SECRET = ENV['CELESTROGEN_OAUTH_TOKEN_SECRET']
+CELESTROBOT_TWITTER_USERNAME = "celestrobot" # Ebooks account username
+# TEXT_MODEL_NAME = "my_ebooks" # This should be the name of the text model
 
 DELAY = 2..30 # Simulated human reply delay range, in seconds
 BLACKLIST = [] # users to avoid interaction with
@@ -36,12 +48,12 @@ class Ebooks::Model
 end
 
 class GenBot
-  def initialize(bot, modelname)
+  def initialize(bot, modelname, consumer_key, consumer_secret)
     @bot = bot
     @model = nil
 
-    bot.consumer_key = CONSUMER_KEY
-    bot.consumer_secret = CONSUMER_SECRET
+    bot.consumer_key = consumer_key
+    bot.consumer_secret = consumer_secret
 
     bot.on_startup do
       @model = Model.load("model/#{modelname}.model")
@@ -152,13 +164,30 @@ class GenBot
   end
 end
 
-def make_bot(bot, modelname)
-  GenBot.new(bot, modelname)
+def make_bot(bot, modelname, consumer_key, consumer_secret)
+  GenBot.new(bot, modelname, consumer_key, consumer_secret)
 end
 
 Ebooks::Bot.new(TWITTER_USERNAME) do |bot|
   bot.oauth_token = OAUTH_TOKEN
   bot.oauth_token_secret = OAUTH_TOKEN_SECRET
 
-  make_bot(bot, TEXT_MODEL_NAME)
+  make_bot(bot, 'alessbell', CONSUMER_KEY, CONSUMER_SECRET)
 end
+
+Ebooks::Bot.new(CELESTROBOT_TWITTER_USERNAME) do |bot|
+  bot.oauth_token = CELESTROGEN_OAUTH_TOKEN
+  bot.oauth_token_secret = CELESTROGEN_OAUTH_TOKEN_SECRET
+
+  make_bot(bot, 'celestrogen', CELESTROGEN_CONSUMER_KEY, CELESTROGEN_CONSUMER_SECRET)
+end
+
+
+# ALL_BOTS.each do |e|
+#   Ebooks::Bot.new(TWITTER_USERNAME) do |bot|
+#     bot.oauth_token = OAUTH_TOKEN
+#     bot.oauth_token_secret = OAUTH_TOKEN_SECRET
+#
+#     make_bot(bot, TEXT_MODEL_NAME)
+#   end
+# end
