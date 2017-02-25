@@ -191,7 +191,7 @@ Ebooks::Bot.new(BAKERBOT_TWITTER_USERNAME) do |bot|
   bot.oauth_token = BAKERBOT_OAUTH_TOKEN
   bot.oauth_token_secret = BAKERBOT_OAUTH_TOKEN_SECRET
 
-  make_bot(bot, 'weyoun8inches', BAKERBOT_CONSUMER_KEY, BAKERBOT_CONSUMER_SECRET)
+  make_bot(bot, 'jamoutofthejar', BAKERBOT_CONSUMER_KEY, BAKERBOT_CONSUMER_SECRET)
 end
 
 
